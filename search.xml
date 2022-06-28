@@ -8,9 +8,15 @@
       <link href="/2022/05/05/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
       <url>/2022/05/05/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/</url>
       
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[<h2 id="parallel"><a href="#parallel" class="headerlink" title="parallel"></a><code>parallel</code></h2><p>好用的批处理工具</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">parallel <span class="hljs-built_in">command</span> parameter &#123;&#125;::: text1 text2 ... text*n<br></code></pre></td></tr></table></figure><p><code>parallel</code> 将command 中的命令执行n次，每次赋予text中的不同值。</p>]]></content>
       
       
+      
+        <tags>
+            
+            <tag> 工具 </tag>
+            
+        </tags>
       
     </entry>
     
