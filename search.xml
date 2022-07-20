@@ -4,11 +4,71 @@
   
     
     <entry>
+      <title>从 firefox 发现 rust 宏扩展的 bug</title>
+      <link href="/2022/07/20/Found-rust-s-macro-expansion-issue-from-firefox/"/>
+      <url>/2022/07/20/Found-rust-s-macro-expansion-issue-from-firefox/</url>
+      
+        <content type="html"><![CDATA[<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>firefox 102 build 的时候会报错找不到 <code>intersection</code> 方法。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs bash">101:24.74 error[E0599]: no method named `intersection` found <span class="hljs-keyword">for</span> struct `FeatureFlags` <span class="hljs-keyword">in</span> the current scope<br>101:24.74    --&gt; servo/components/style/queries/feature.rs:126:14<br>101:24.74     |<br>101:24.74 103 | / bitflags! &#123;<br>101:24.74 104 | |     /// Different flags or toggles that change how a expression is parsed or<br>101:24.74 105 | |     /// evaluated.<br>101:24.74 106 | |     <span class="hljs-comment">#[derive(ToShmem)]</span><br>101:24.74 ...   |<br>101:24.74 120 | |     &#125;<br>101:24.74 121 | | &#125;<br>101:24.74     | |_- method `intersection` not found <span class="hljs-keyword">for</span> this<br>101:24.74 ...<br>101:24.74 126 |           self.intersection(Self::CHROME_AND_UA_ONLY | Self::WEBKIT_PREFIX)<br>101:24.74     |                ^^^^^^^^^^^^ <span class="hljs-built_in">help</span>: there is an associated <span class="hljs-keyword">function</span> with a similar name: `intersects`<br>101:24.79 error[E0599]: no method named `intersection` found <span class="hljs-keyword">for</span> struct `FeatureFlags` <span class="hljs-keyword">in</span> the current scope<br>101:24.79    --&gt; servo/components/style/queries/feature.rs:139:14<br>101:24.79     |<br>101:24.79 103 | / bitflags! &#123;<br>101:24.79 104 | |     /// Different flags or toggles that change how a expression is parsed or<br>101:24.79 105 | |     /// evaluated.<br>101:24.79 106 | |     <span class="hljs-comment">#[derive(ToShmem)]</span><br>101:24.79 ...   |<br>101:24.79 120 | |     &#125;<br>101:24.79 121 | | &#125;<br>101:24.79     | |_- method `intersection` not found <span class="hljs-keyword">for</span> this<br>101:24.79 ...<br>101:24.79 139 |           self.intersection(Self::all_container_axes())<br>101:24.79     |                ^^^^^^^^^^^^ <span class="hljs-built_in">help</span>: there is an associated <span class="hljs-keyword">function</span> with a similar name: `intersects`<br>102:23.55 For more information about this error, try `rustc --explain E0599`.<br></code></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> RISC-V </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> firefox </tag>
+            
+            <tag> archlinux </tag>
+            
+            <tag> rust </tag>
+            
+            <tag> RISC-V </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>llvm 13 to llvm 14 bootstrap 流程</title>
+      <link href="/2022/06/29/llvm-13-to-llvm-14-bootstrap-%E6%B5%81%E7%A8%8B/"/>
+      <url>/2022/06/29/llvm-13-to-llvm-14-bootstrap-%E6%B5%81%E7%A8%8B/</url>
+      
+        <content type="html"><![CDATA[<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>1.测试宋老师的lld patch.</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 分享 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> archlinux </tag>
+            
+            <tag> RISC-V </tag>
+            
+            <tag> 分享 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>常用工具</title>
       <link href="/2022/05/05/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
       <url>/2022/05/05/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/</url>
       
-        <content type="html"><![CDATA[<h2 id="parallel"><a href="#parallel" class="headerlink" title="parallel"></a><code>parallel</code></h2><p>好用的批处理工具</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">parallel <span class="hljs-built_in">command</span> parameter &#123;&#125;::: text1 text2 ... text*n<br></code></pre></td></tr></table></figure><p><code>parallel</code> 将command 中的命令执行n次，每次赋予text中的不同值。</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="parallel"><a href="#parallel" class="headerlink" title="parallel"></a><code>parallel</code></h2><p>好用的批处理工具</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">parallel <span class="hljs-built_in">command</span> parameter &#123;&#125;::: text1 text2 ... text*n<br></code></pre></td></tr></table></figure><p><code>parallel</code> 将 command 中的命令执行 n 次，每次赋予 text 中的不同值。</p><p><strong>注意:</strong> <code>parallel</code> 是将每条命令执行多次，如果有判断后写入语句建议先单独执行一次，将内容写入后用<code>parallel</code>执行。</p><h2 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a><code>tmux</code></h2><h2 id="96-96"><a href="#96-96" class="headerlink" title="&#96;&#96;"></a>&#96;&#96;</h2>]]></content>
       
       
       
@@ -98,7 +158,7 @@
       <link href="/2020/07/21/text/"/>
       <url>/2020/07/21/text/</url>
       
-        <content type="html"><![CDATA[<h2 id="首发纪念"><a href="#首发纪念" class="headerlink" title="首发纪念"></a>首发纪念</h2><p>没啥 就是纪念一下今天blog搞好了</p><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">source</span> vinv/bin/activate<br><br><span class="hljs-built_in">eval</span> $(pifpaf run postgresql --host 127.0.0.1 --port 5432)<br><br>createuser -s postgres<br><br>--cov mining_proxy(想看覆盖率的地方)<br><br></code></pre></td></tr></table></figure>]]></content>
+        <content type="html"><![CDATA[<h2 id="首发纪念"><a href="#首发纪念" class="headerlink" title="首发纪念"></a>首发纪念</h2><p>没啥 就是纪念一下今天 blog 搞好了</p><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">source</span> vinv/bin/activate<br><br><span class="hljs-built_in">eval</span> $(pifpaf run postgresql --host 127.0.0.1 --port 5432)<br><br>createuser -s postgres<br><br>--cov mining_proxy(想看覆盖率的地方)<br><br></code></pre></td></tr></table></figure>]]></content>
       
       
       
