@@ -160,10 +160,10 @@
 
   <div class="content" itemprop="articleBody">
     <h2 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h2><h3 id="创建的-tags-写法错误"><a href="#创建的-tags-写法错误" class="headerlink" title="创建的 tags 写法错误"></a>创建的 tags 写法错误</h3><p>删除 tags , categories 文件夹再次添加</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo new page tags<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page tags</span><br></pre></td></tr></table></figure>
 
 <p>在 tags 的 index.md 中添加</p>
-<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs md">---<br>layout: &quot;tags&quot;<br><span class="hljs-section">type: &quot;tags&quot;</span><br><span class="hljs-section">---</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">layout: &quot;tags&quot;</span><br><span class="line"><span class="section">type: &quot;tags&quot;</span></span><br><span class="line"><span class="section">---</span></span><br></pre></td></tr></table></figure>
 
 <p>记得添加在虚线中。</p>
 <h3 id="主题不支持"><a href="#主题不支持" class="headerlink" title="主题不支持"></a>主题不支持</h3><p>更新主题,可能是当前主题不支持显示 tag 页面。更换到有 tag 页面的主题就好。</p>

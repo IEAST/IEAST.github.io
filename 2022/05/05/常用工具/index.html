@@ -155,7 +155,7 @@
 
   <div class="content" itemprop="articleBody">
     <h2 id="parallel"><a href="#parallel" class="headerlink" title="parallel"></a><code>parallel</code></h2><p>好用的批处理工具</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">parallel <span class="hljs-built_in">command</span> parameter &#123;&#125;::: text1 text2 ... text*n<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parallel <span class="built_in">command</span> parameter &#123;&#125;::: text1 text2 ... text*n</span><br></pre></td></tr></table></figure>
 
 <p><code>parallel</code> 将 command 中的命令执行 n 次，每次赋予 text 中的不同值。</p>
 <p><strong>注意:</strong> <code>parallel</code> 是将每条命令执行多次，如果有判断后写入语句建议先单独执行一次，将内容写入后用<code>parallel</code>执行。</p>
