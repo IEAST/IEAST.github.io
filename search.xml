@@ -20,42 +20,13 @@
       
         <tags>
             
-            <tag> archlinux </tag>
-            
-            <tag> RISC-V </tag>
-            
             <tag> firefox </tag>
+            
+            <tag> archlinux </tag>
             
             <tag> rust </tag>
             
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>llvm 13 to llvm 14 bootstrap 流程</title>
-      <link href="/2022/06/29/llvm-13-to-llvm-14-bootstrap-%E6%B5%81%E7%A8%8B/"/>
-      <url>/2022/06/29/llvm-13-to-llvm-14-bootstrap-%E6%B5%81%E7%A8%8B/</url>
-      
-        <content type="html"><![CDATA[<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>1.测试宋老师的lld patch.</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 分享 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> archlinux </tag>
-            
             <tag> RISC-V </tag>
-            
-            <tag> 分享 </tag>
             
         </tags>
       
