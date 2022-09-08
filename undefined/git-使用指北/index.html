@@ -9,7 +9,7 @@
     <meta name="description" content="第一次使用 git 仓库12345git init(建立本地git仓库)git add XXX(添加文件到本地git仓库)git commit -m &quot;XXXX&quot;(添加commit 信息)git remote add origin git@github.com:name&#x2F;project.git (添加github仓库)$ git push -u origin master (提">
 <meta property="og:type" content="article">
 <meta property="og:title" content="git 使用指北">
-<meta property="og:url" content="http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/index.html">
+<meta property="og:url" content="http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/index.html">
 <meta property="og:site_name" content="EastDong&#39;s Blog">
 <meta property="og:description" content="第一次使用 git 仓库12345git init(建立本地git仓库)git add XXX(添加文件到本地git仓库)git commit -m &quot;XXXX&quot;(添加commit 信息)git remote add origin git@github.com:name&#x2F;project.git (添加github仓库)$ git push -u origin master (提">
 <meta property="og:locale" content="zh_CN">
@@ -22,17 +22,17 @@
     
       
         
-          <link rel="shortcut icon" href="../../../../images/favicon.ico">
+          <link rel="shortcut icon" href="/images/favicon.ico">
         
       
       
         
-          <link rel="icon" type="image/png" href="../../../../images/favicon-192x192.png" sizes="192x192">
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
         
       
       
         
-          <link rel="apple-touch-icon" sizes="180x180" href="../../../../images/apple-touch-icon.png">
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
         
       
     
@@ -40,7 +40,7 @@
     <title>git 使用指北</title>
     <!-- styles -->
     
-<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="/css/style.css">
 
     <!-- persian styles -->
     
@@ -61,17 +61,17 @@
     <span id="nav">
       <ul>
         <!--
-       --><li><a href="../../../../index.html">首页</a></li><!--
+       --><li><a href="/">首页</a></li><!--
      --><!--
-       --><li><a href="../../../../about/">关于</a></li><!--
+       --><li><a href="/about/">关于</a></li><!--
      --><!--
-       --><li><a href="../../../../archives/">归档</a></li><!--
+       --><li><a href="/archives/">归档</a></li><!--
      --><!--
-       --><li><a href="../../../../categories/">Categories</a></li><!--
+       --><li><a href="/categories/">Categories</a></li><!--
      --><!--
-       --><li><a href="../../../../tags/">Tags</a></li><!--
+       --><li><a href="/tags/">Tags</a></li><!--
      --><!--
-       --><li><a href="../../../../Search/">Search</a></li><!--
+       --><li><a href="/Search/">Search</a></li><!--
      -->
       </ul>
     </span>
@@ -79,10 +79,10 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" aria-label="上一篇" href="../hexo-tag-%E9%A1%B5%E9%9D%A2%E4%B8%8D%E6%98%BE%E7%A4%BA/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="上一篇" href="/undefined/hexo-tag-%E9%A1%B5%E9%9D%A2%E4%B8%8D%E6%98%BE%E7%A4%BA/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
-        <li><a class="icon" aria-label="下一篇" href="../../../../2020/07/21/warframe/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="下一篇" href="/undefined/warframe/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -95,17 +95,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&text=git 使用指北"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&is_video=false&description=git 使用指北"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=git 使用指北&body=Check out this article: http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&name=git 使用指北&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&t=git 使用指北"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&text=git 使用指北"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&is_video=false&description=git 使用指北"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=git 使用指北&body=Check out this article: http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&name=git 使用指北&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&t=git 使用指北"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -143,14 +143,14 @@
       
     <div class="article-category">
         <i class="fas fa-archive"></i>
-        <a class="category-link" href="../../../../categories/%E6%95%99%E7%A8%8B/">教程</a>
+        <a class="category-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a>
     </div>
 
 
       
     <div class="article-tag">
         <i class="fas fa-tag"></i>
-        <a class="tag-link-link" href="../../../../tags/git/" rel="tag">git</a>
+        <a class="tag-link-link" href="/tags/git/" rel="tag">git</a>
     </div>
 
 
@@ -197,17 +197,17 @@
     <div id="nav-footer" style="display: none">
       <ul>
          
-          <li><a href="../../../../index.html">首页</a></li>
+          <li><a href="/">首页</a></li>
          
-          <li><a href="../../../../about/">关于</a></li>
+          <li><a href="/about/">关于</a></li>
          
-          <li><a href="../../../../archives/">归档</a></li>
+          <li><a href="/archives/">归档</a></li>
          
-          <li><a href="../../../../categories/">Categories</a></li>
+          <li><a href="/categories/">Categories</a></li>
          
-          <li><a href="../../../../tags/">Tags</a></li>
+          <li><a href="/tags/">Tags</a></li>
          
-          <li><a href="../../../../Search/">Search</a></li>
+          <li><a href="/Search/">Search</a></li>
         
       </ul>
     </div>
@@ -218,17 +218,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&text=git 使用指北"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&is_video=false&description=git 使用指北"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=git 使用指北&body=Check out this article: http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&name=git 使用指北&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://ieast.github.io/2022/04/18/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&t=git 使用指北"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&text=git 使用指北"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&is_video=false&description=git 使用指北"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=git 使用指北&body=Check out this article: http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&title=git 使用指北"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&name=git 使用指北&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://ieast.github.io/undefined/git-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/&t=git 使用指北"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -256,17 +256,17 @@
     <nav>
       <ul>
         <!--
-       --><li><a href="../../../../index.html">首页</a></li><!--
+       --><li><a href="/">首页</a></li><!--
      --><!--
-       --><li><a href="../../../../about/">关于</a></li><!--
+       --><li><a href="/about/">关于</a></li><!--
      --><!--
-       --><li><a href="../../../../archives/">归档</a></li><!--
+       --><li><a href="/archives/">归档</a></li><!--
      --><!--
-       --><li><a href="../../../../categories/">Categories</a></li><!--
+       --><li><a href="/categories/">Categories</a></li><!--
      --><!--
-       --><li><a href="../../../../tags/">Tags</a></li><!--
+       --><li><a href="/tags/">Tags</a></li><!--
      --><!--
-       --><li><a href="../../../../Search/">Search</a></li><!--
+       --><li><a href="/Search/">Search</a></li><!--
      -->
       </ul>
     </nav>
@@ -314,7 +314,7 @@
   </script>
 
 
-<script src="../js/main.js"></script>
+<script src="/js/main.js"></script>
 
 <!-- search -->
 
