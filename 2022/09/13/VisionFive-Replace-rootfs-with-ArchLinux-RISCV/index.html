@@ -16,7 +16,7 @@
 <meta property="og:image" content="http://ieast.github.io/2022/09/13/VisionFive-Replace-rootfs-with-ArchLinux-RISCV/1.jpg">
 <meta property="og:image" content="http://ieast.github.io/2022/09/13/VisionFive-Replace-rootfs-with-ArchLinux-RISCV/2.jpg">
 <meta property="article:published_time" content="2022-09-13T03:35:29.000Z">
-<meta property="article:modified_time" content="2022-09-13T12:36:33.526Z">
+<meta property="article:modified_time" content="2022-09-13T12:40:03.174Z">
 <meta property="article:author" content="eastdong">
 <meta property="article:tag" content="RISC-V">
 <meta property="article:tag" content="AarchLinux">
@@ -171,19 +171,19 @@
 <p><em>PS:</em> usb 串口模块接串口的时候，需 <strong>板子上的 RX 接电脑的 TX</strong>.</p>
 <h2 id="按照官方手册下载-Fedora-镜像并且写入-sd-卡"><a href="#按照官方手册下载-Fedora-镜像并且写入-sd-卡" class="headerlink" title="按照官方手册下载 Fedora 镜像并且写入 sd 卡"></a>按照官方手册下载 Fedora 镜像并且写入 sd 卡</h2><p>手册链接: <a target="_blank" rel="noopener" href="https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjn-8Ss8pD6AhWG-2EKHYzmCHEQFnoECAkQAQ&url=https://starfivetech.com/uploads/VisionFive%2520Single%2520Board%2520Computer%2520Quick%2520Start%2520Guide.pdf&usg=AOvVaw0LhpUFxlCjfywrGSvSO-Mt">VisionFive SBC Quick Start Guide</a></p>
 <p>镜像地址: <a target="_blank" rel="noopener" href="https://github.com/starfive-tech/Fedora_on_StarFive">https://github.com/starfive-tech/Fedora_on_StarFive</a></p>
-<p>下载后得到 <code>Fedora-riscv64-jh7100-developer-xfce-Rawhide-20211226-214100.n.0-sda.raw.zst</code></p>
-<p>使用 <code>zstd -d Fedora-riscv64-jh7100-developer-xfce-Rawhide-20211226-214100.n.0-sda.raw.zst</code> 解压得到 <code>Fedora-riscv64-jh7100-developer-xfce-Rawhide-20211226-214100.n.0-sda.raw</code></p>
+<p>下载后得到<code>Fedora-riscv64-jh7100-developer-xfce-Rawhide-20211226-214100.n.0-sda.raw.zst</code></p>
+<p>使用<code>zstd -d Fedora-riscv64-jh7100-developer-xfce-Rawhide-20211226-214100.n.0-sda.raw.zst</code> 解压得到<code>Fedora-riscv64-jh7100-developer-xfce-Rawhide-20211226-214100.n.0-sda.raw</code></p>
 <p>将 sd 卡插入电脑，并将镜像文件写入 sd 卡。（此过程耗时较久）</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 可以使用 fdisk 等软件来确认sd卡的位置</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 注意替换 of 中的 /dev/sdX</span></span><br><span class="line">sudo <span class="built_in">dd</span> <span class="keyword">if</span>=Fedora-riscv64-jh7100-developer-xfce-Rawhide-20211226-214100.n.0-sda.raw of=/dev/sdX bs=8M status=progress &amp;&amp; <span class="built_in">sync</span></span><br><span class="line"></span><br><span class="line">13589544960 bytes (14 GB, 13 GiB) copied, 1201 s, 11.3 MB/s</span><br><span class="line">1620+0 records <span class="keyword">in</span></span><br><span class="line">1620+0 records out</span><br><span class="line">13589544960 bytes (14 GB, 13 GiB) copied, 1424.52 s, 9.5 MB/s</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h2 id="替换-rootfs"><a href="#替换-rootfs" class="headerlink" title="替换 rootfs"></a>替换 rootfs</h2><ol>
-<li><p>挂载 sd 卡的内容到 <code>/mnt</code></p>
+<li><p>挂载 sd 卡的内容到<code>/mnt</code></p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#此处以 /dev/sda4 为例子</span></span><br><span class="line">sudo mount /dev/sda4 /mnt</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>在<code>mnt</code>下创建 <code>old</code> <code>new</code> 两个目录</p>
+<li><p>在<code>mnt</code>下创建<code>old</code> <code>new</code>两个目录</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /mnt</span><br><span class="line">sudo <span class="built_in">mkdir</span> new old</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>下载 <a target="_blank" rel="noopener" href="https://archriscv.felixc.at/images/archriscv-20220727.tar.zst"><code>archriscv-20220727.tar.zst</code></a>,并解压到 <code>new</code> 目录</p>
+<li><p>下载 <a target="_blank" rel="noopener" href="https://archriscv.felixc.at/images/archriscv-20220727.tar.zst"><code>archriscv-20220727.tar.zst</code></a>,并解压到<code>new</code>目录</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> new</span><br><span class="line">sudo bsdtar -xvf archriscv-20220727.tar.zst</span><br></pre></td></tr></table></figure></li>
 <li><p>启动 Fedora Linux RISC-V 虚拟机</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 看到设备以及从 本机（East）,变为 fedora 了</span></span><br><span class="line">[eastdong@East ~]$ sudo systemd-nspawn -D /mnt/ --machine fedora -a -U</span><br><span class="line">Spawning container fedora on /mnt.</span><br><span class="line">Press ^] three <span class="built_in">times</span> within 1s to <span class="built_in">kill</span> container.</span><br><span class="line">Selected user namespace base 277413888 and range 65536.</span><br><span class="line">[root@fedora ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure></li>
@@ -196,9 +196,9 @@
 <li><p>继续移动文件夹</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/new/lib/ /new/lib/ld-linux-riscv64-lp64d.so.1 /new/bin/mv bin sbin usr lib old/</span><br><span class="line">LD_LIBRARY_PATH=/new/lib/ /new/lib/ld-linux-riscv64-lp64d.so.1 /new/bin/mv new/bin new/sbin new/usr new/lib ./</span><br><span class="line"></span><br><span class="line"><span class="built_in">mv</span> old/lib/firmware ./lib/</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>移动 <code>kernel modules</code></p>
+<li><p>移动<code>kernel modules</code></p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mv</span> old/usr/lib/modules/ ./lib/</span><br></pre></td></tr></table></figure></li>
-<li><p>复制 <code>fstab</code></p>
+<li><p>复制<code>fstab</code></p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mv</span> /old/etc/fstab ./etc/</span><br></pre></td></tr></table></figure></li>
 </ol>
 </li>
@@ -207,15 +207,15 @@
 <li><p>下载一些常用软件，并更新数据库</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pacman -Syyu</span><br><span class="line">pacman -S bash-completion vim <span class="comment"># wpa_supplicant</span></span><br></pre></td></tr></table></figure>
 </li>
-<li><p>取消挂载，将 sd 卡插入板子。更换 archriscv 后的用户名 <code>root</code> ,密码 <code>sifive</code> 。</p>
+<li><p>取消挂载，将 sd 卡插入板子。更换 archriscv 后的用户名<code>root</code>,密码<code>sifive</code> 。</p>
 </li>
 <li><p>连接串口，使用<code>sudo picocom -b 115200 /dev/ttyUSB0</code>连接串口查看板子情况。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line">Linux fedora-starfive 5.15.10+ <span class="comment">#1 SMP Fri Dec 24 14:24:27 CST 2021 riscv64 GNU/Linux</span></span><br></pre></td></tr></table></figure></li>
 </ol>
 <h2 id="配置网络"><a href="#配置网络" class="headerlink" title="配置网络"></a>配置网络</h2><ol>
-<li><p>这边使用的是 <code>systemd-network</code> 来进行有线连接。</p>
+<li><p>这边使用的是<code>systemd-network</code>来进行有线连接。</p>
 </li>
-<li><p>使用 <code>ip a</code> 查看网口信息。</p>
+<li><p>使用<code>ip a</code>查看网口信息。</p>
 </li>
 <li><p>编译<code>/etc/systemd/network/default.network</code></p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[Match]</span><br><span class="line">Name=eth* <span class="comment">#我这边有线的命名是 eth0</span></span><br><span class="line"></span><br><span class="line">[Network]</span><br><span class="line">DHCP=<span class="built_in">yes</span></span><br></pre></td></tr></table></figure>
