@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>yum 不完全使用指南</title>
+      <link href="/2023/04/12/yum-%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"/>
+      <url>/2023/04/12/yum-%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
+      
+        <content type="html"><![CDATA[<h2 id="yum-查询某个子包存在的软件包"><a href="#yum-查询某个子包存在的软件包" class="headerlink" title="yum 查询某个子包存在的软件包"></a>yum 查询某个子包存在的软件包</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum <span class="built_in">info</span> xxx</span><br></pre></td></tr></table></figure><p>例如:</p><p>查询 <code>qt5-rpm-macros</code></p><figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[eastdong@openeuler-riscv64 ~]$ yum info qt5-rpm-macros</span><br><span class="line">Last metadata expiration check: <span class="number">0</span>:<span class="number">03</span>:<span class="number">57</span> ago on Wed <span class="number">12</span> Apr <span class="number">2023</span> <span class="number">02</span>:<span class="number">20</span>:<span class="number">49</span> PM +<span class="number">08</span>.</span><br><span class="line">Available Packages</span><br><span class="line">Name         : <span class="type">qt5</span>-rpm-macros</span><br><span class="line">Version      : 5.15.2</span><br><span class="line">Release      : 1.<span class="type">oe2303</span></span><br><span class="line">Architecture : <span class="type">noarch</span></span><br><span class="line">Size         : 9.9 <span class="type">k</span></span><br><span class="line">Source       : <span class="type">qt5</span>-<span class="number">5.15</span>.<span class="number">2</span>-<span class="number">1</span>.oe2303.src.rpm</span><br><span class="line">Repository   : <span class="type">mainline</span></span><br><span class="line">Summary      : <span class="type">RPM</span> macros <span class="keyword">for</span> building Qt5 <span class="keyword">and</span> KDE Frameworks <span class="number">5</span> packages</span><br><span class="line">URL          : <span class="type">https</span>://getfedora.org/</span><br><span class="line">License      : <span class="type">GPLv3</span></span><br><span class="line">Description  : <span class="type">RPM</span> provides a rich set <span class="keyword">of</span> macros to make <span class="keyword">package</span> <span class="title">maintenance simpler and cons</span>istent across packages.</span><br></pre></td></tr></table></figure><p>Source 的内容就是主包。</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>给 VisonFive 安装 ArchLinux</title>
       <link href="/2022/09/13/VisionFive-Replace-rootfs-with-ArchLinux-RISCV/"/>
       <url>/2022/09/13/VisionFive-Replace-rootfs-with-ArchLinux-RISCV/</url>
