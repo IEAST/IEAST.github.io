@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="最近在 Debian 上折腾Debian for rva22 ，看了一下 Debian 提供了较为完善的生态能够很方便的构建和维护自己的发行版。主要用到的工具有 wanna build , reprepro , buildd 这三个。他们的关系图如下：  接下来我介绍以下这三种工具的使用和他们的联系，大部分的内容是基于 debian wiki 的信息，还有少部分内容是踩过的一些坑。 通常情况下，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="wanna build 和 buildd 不完全使用指南">
+<meta property="og:url" content="http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="EastDong&#39;s Blog">
+<meta property="og:description" content="最近在 Debian 上折腾Debian for rva22 ，看了一下 Debian 提供了较为完善的生态能够很方便的构建和维护自己的发行版。主要用到的工具有 wanna build , reprepro , buildd 这三个。他们的关系图如下：  接下来我介绍以下这三种工具的使用和他们的联系，大部分的内容是基于 debian wiki 的信息，还有少部分内容是踩过的一些坑。 通常情况下，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/wanna-build_buildd_reprepro_%E5%85%B3%E7%B3%BB%E5%9B%BE.png">
+<meta property="article:published_time" content="2025-03-14T03:25:59.000Z">
+<meta property="article:modified_time" content="2025-03-14T11:25:11.666Z">
+<meta property="article:author" content="eastdong">
+<meta property="article:tag" content="Debian">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/wanna-build_buildd_reprepro_%E5%85%B3%E7%B3%BB%E5%9B%BE.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>wanna build 和 buildd 不完全使用指南</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/Search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/04/12/yum-%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&text=wanna build 和 buildd 不完全使用指南"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&title=wanna build 和 buildd 不完全使用指南"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&is_video=false&description=wanna build 和 buildd 不完全使用指南"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=wanna build 和 buildd 不完全使用指南&body=Check out this article: http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&title=wanna build 和 buildd 不完全使用指南"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&title=wanna build 和 buildd 不完全使用指南"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&title=wanna build 和 buildd 不完全使用指南"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&title=wanna build 和 buildd 不完全使用指南"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&name=wanna build 和 buildd 不完全使用指南&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&t=wanna build 和 buildd 不完全使用指南"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-reprepro"><span class="toc-number">1.</span> <span class="toc-text">1. reprepro</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-install"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 install</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%88%9B%E5%BB%BA%E4%BB%93%E5%BA%93%E7%9B%AE%E5%BD%95"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 创建仓库目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 配置文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-1-distributions"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.3.1 distributions</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2-incoming"><span class="toc-number">1.3.2.</span> <span class="toc-text">1.3.2 incoming</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-3-options"><span class="toc-number">1.3.3.</span> <span class="toc-text">1.3.3 options</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-4-updates"><span class="toc-number">1.3.4.</span> <span class="toc-text">1.3.4 updates</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E4%BD%BF%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-1-%E6%9B%B4%E6%96%B0%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%B4%A2%E5%BC%95"><span class="toc-number">1.4.1.</span> <span class="toc-text">1.4.1 更新软件包索引</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-2-%E5%AF%BC%E5%85%A5-deb-%E5%8C%85-x2F-dsc-%E6%96%87%E4%BB%B6"><span class="toc-number">1.4.2.</span> <span class="toc-text">1.4.2 导入 deb 包&#x2F; dsc 文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-3-%E6%9F%A5%E7%9C%8B%E8%BD%AF%E4%BB%B6%E5%8C%85-list"><span class="toc-number">1.4.3.</span> <span class="toc-text">1.4.3 查看软件包 list</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-4-%E5%88%A0%E9%99%A4-deb-%E5%8C%85"><span class="toc-number">1.4.4.</span> <span class="toc-text">1.4.4 删除 deb 包</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wanna-build"><span class="toc-number">2.</span> <span class="toc-text">wanna build</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#install"><span class="toc-number">2.1.</span> <span class="toc-text">install</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0-Packages-arch-specific"><span class="toc-number">2.2.</span> <span class="toc-text">添加 Packages-arch-specific</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E8%BD%AF%E4%BB%B6%E5%8C%85%E5%88%B0%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">2.3.</span> <span class="toc-text">添加软件包到数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E5%B0%8F%E8%B4%B4%E5%A3%AB"><span class="toc-number">2.3.1.</span> <span class="toc-text">踩坑小贴士</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">2.4.</span> <span class="toc-text">常用命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#buildd"><span class="toc-number">3.</span> <span class="toc-text">buildd</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">3.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE-sbuild-%E5%92%8C-schroot"><span class="toc-number">3.2.</span> <span class="toc-text">设置 sbuild 和 schroot</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-buildd"><span class="toc-number">3.3.</span> <span class="toc-text">配置 buildd</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E5%B0%8F%E9%97%AE%E9%A2%98"><span class="toc-number">4.</span> <span class="toc-text">一些小问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.1.</span> <span class="toc-text">参考:</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        wanna build 和 buildd 不完全使用指南
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">eastdong</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-03-14T03:25:59.000Z" itemprop="datePublished">2025-03-14</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Debian/" rel="tag">Debian</a>, <a class="tag-link-link" href="/tags/Linux/" rel="tag">Linux</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>最近在 Debian 上折腾Debian for rva22 ，看了一下 Debian 提供了较为完善的生态能够很方便的构建和维护自己的发行版。主要用到的工具有 wanna build , reprepro , buildd 这三个。他们的关系图如下：</p>
+<p><img src="/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/wanna-build_buildd_reprepro_%E5%85%B3%E7%B3%BB%E5%9B%BE.png" alt="wanna build , buildd , reprepro 关系图"></p>
+<p>接下来我介绍以下这三种工具的使用和他们的联系，大部分的内容是基于 debian wiki 的信息，还有少部分内容是踩过的一些坑。</p>
+<p>通常情况下， wanna build 和 reprepro 是在同一台性能一般的机器上，主要负责仓库管理和维护。 buildd 运行在性能强劲的构建机上的，可以有一台或者多台。</p>
+<h2 id="1-reprepro"><a href="#1-reprepro" class="headerlink" title="1. reprepro"></a>1. reprepro</h2><h3 id="1-1-install"><a href="#1-1-install" class="headerlink" title="1.1 install"></a>1.1 install</h3><p>Debian 仓库中提供了 reprepro，因此可以直接安装</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install reprepro</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-创建仓库目录"><a href="#1-2-创建仓库目录" class="headerlink" title="1.2 创建仓库目录"></a>1.2 创建仓库目录</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p /srv/ftp.debian.org/ftp/apt/</span><br><span class="line"><span class="built_in">cd</span> /srv/ftp.debian.org/ftp/apt/</span><br><span class="line"><span class="built_in">mkdir</span> conf dists incoming indices logs pool project</span><br></pre></td></tr></table></figure>
+<p>这里，第一个路径 <code>/srv/ftp.debian.org/ftp/apt/</code> 可自行替换，建议替换为当前想要构建的版本代号。例如：我的 rva22 的路径就是 <code>/repo/rva22/repo</code></p>
+<h3 id="1-3-配置文件"><a href="#1-3-配置文件" class="headerlink" title="1.3 配置文件"></a>1.3 配置文件</h3><p>配置文件在 <code>conf</code> 路径下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /srv/ftp.debian.org/ftp/apt/conf/</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-1-distributions"><a href="#1-3-1-distributions" class="headerlink" title="1.3.1 distributions"></a>1.3.1 distributions</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim distributions</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Origin:</span> <span class="string">Alexander</span> <span class="string">Pashaliyski</span></span><br><span class="line"><span class="attr">Label:</span> <span class="string">Alexander</span> <span class="string">Pashaliyski</span></span><br><span class="line"><span class="attr">Codename:</span> <span class="string">sid</span></span><br><span class="line"><span class="attr">Architectures:</span> <span class="string">i386</span> <span class="string">amd64</span> <span class="string">source</span></span><br><span class="line"><span class="attr">Components:</span> <span class="string">main</span></span><br><span class="line"><span class="attr">Description:</span> <span class="string">Alexander</span> <span class="string">Pashaliyski</span> <span class="string">APT</span> <span class="string">Repository</span></span><br><span class="line"><span class="attr">SignWith:</span> <span class="literal">yes</span></span><br></pre></td></tr></table></figure>
+<p>下面是一些字段解释：<code>Origin</code> 代表仓库维护者或组织名称，<code>Label</code> 代表仓库名称，<code>Codename</code> 表示发行版的代号，<code>Architectures</code> 指定该仓库支持的 CPU 架构，<code>Components</code> 表示该仓库包含的组件，<code>Description</code> 说明该仓库的用途，<code>SignWith</code> 指定是否对仓库进行 GPG 签名。</p>
+<p>同时还有一些字段这里面没有显示出来，包括了 <code>Version</code>,<code>UDebComponents</code>,<code>Log</code> 同时还能指定 log 文件，方便日后定位问题。</p>
+<p>同时，一个 <code>distributions</code> 中可以写多个仓库，但是最好还是创建不同的仓库目录会更好。但是如果你像我一样建立仓库导入 source 的时候没有仔细甄别，遇到  oracular<br>中依赖了 oracular-security 的 pkg,那就可以写在同一个 <code>distributions</code> 中。</p>
+<h4 id="1-3-2-incoming"><a href="#1-3-2-incoming" class="headerlink" title="1.3.2 incoming"></a>1.3.2 incoming</h4><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">vim incoming</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">Name:</span> <span class="keyword">default</span></span><br><span class="line"><span class="symbol">IncomingDir:</span> incoming</span><br><span class="line"><span class="symbol">TempDir:</span> /tmp</span><br><span class="line"><span class="symbol">Allow:</span> sid</span><br><span class="line"><span class="symbol">Cleanup:</span> on_deny on_error</span><br></pre></td></tr></table></figure>
+
+<p><code>incoming</code> 是定义如何处理上传到仓库的 .deb 包。它有 5 个字段。 比较重要的是 <code>Allow</code> 字段，表明了允许导入的软件包的目标发行版，不再目标发行版中的软件包将无法被导入。</p>
+<h4 id="1-3-3-options"><a href="#1-3-3-options" class="headerlink" title="1.3.3 options"></a>1.3.3 options</h4><p><code>options</code> 用来定义 reprepro 的基本工作目录和行为, wiki 中这部分的内容比较少，我在补充以一下我的配置</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">vim</span> <span class="keyword">options</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">verbose</span><br><span class="line">basedir repo/xxx</span><br><span class="line">outdit out/xxx</span><br><span class="line">morguedir +o/archrives</span><br><span class="line">logdir +o/log</span><br></pre></td></tr></table></figure>
+
+<p>以下是字段解释</p>
+<ul>
+<li>verbose: 开启详细模式，方便排查问题</li>
+<li>basedir: 仓库的基础目录，所有的操作都将会在这个目录中</li>
+<li>outdit: 输出目录，可用于 web 服务器提供仓库服务</li>
+<li>morguedir: 存放删除的软件包，避免手滑</li>
+<li>logdir:日志目录，方便记录日志</li>
+</ul>
+<h4 id="1-3-4-updates"><a href="#1-3-4-updates" class="headerlink" title="1.3.4 updates"></a>1.3.4 updates</h4><p>上游配置，用于从上游仓库同步软件包</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">vim updates</span></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Name: import</span><br><span class="line"><span class="keyword">Method</span>: https:<span class="comment">//mirror.nju.edu.cn/xxxxx</span></span><br><span class="line">Suite: oracular</span><br><span class="line">Components: main restricted universe multiverse</span><br><span class="line">Architectures: source</span><br><span class="line">IgnoreRelease: yes</span><br><span class="line">UDebComponents: main</span><br></pre></td></tr></table></figure>
+
+<p>这是我的配置，字段解释如下</p>
+<ul>
+<li>Name: 规则名称</li>
+<li>Method: 上游仓库的地址</li>
+<li>Suite: 发行版名称，需要和 distributions 中的 codename 匹配 </li>
+<li>Components: 指定拉去的软件包组件</li>
+<li>Architectures: 需要同步的架构，因为这边我准备完全重新编译，所以就只导入了源代码</li>
+<li>IgnoreRelease: 是否要忽略 Release 文件校验</li>
+<li>UDebComponents: 指定 udeb 组件</li>
+</ul>
+<p>同样，一个 update 中也可以写多个 import 规则，只需要名字和对应的发行版区分开就好</p>
+<p>至此， reprepro 的基础配置就已经完成了。</p>
+<h3 id="1-4-使用"><a href="#1-4-使用" class="headerlink" title="1.4 使用"></a>1.4 使用</h3><h4 id="1-4-1-更新软件包索引"><a href="#1-4-1-更新软件包索引" class="headerlink" title="1.4.1 更新软件包索引"></a>1.4.1 更新软件包索引</h4><p>获取上游软件包,更新软件包索引</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reprepro -b . update oracula</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意:</strong> 执行这条命令的时候需要在 <code>/srv/ftp.debian.org/ftp/apt/</code> 目录下，其中的 <code>.</code> 指的是当前路径。如果不在 <code>/srv/ftp.debian.org/ftp/apt/</code> 路径下，需要将 <code>.</code> 替换为绝对路径，该命令变形为：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reprepro -b /srv/ftp.debian.org/ftp/apt/ update oracula</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-4-2-导入-deb-包-x2F-dsc-文件"><a href="#1-4-2-导入-deb-包-x2F-dsc-文件" class="headerlink" title="1.4.2 导入 deb 包&#x2F; dsc 文件"></a>1.4.2 导入 deb 包&#x2F; dsc 文件</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reprepro -b /srv/ftp.debian.org/ftp/apt/ includedeb oracular *.deb</span><br><span class="line"></span><br><span class="line">reprepro -b /srv/ftp.debian.org/ftp/apt/ includedsc oracular *.dsc</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-4-3-查看软件包-list"><a href="#1-4-3-查看软件包-list" class="headerlink" title="1.4.3 查看软件包 list"></a>1.4.3 查看软件包 list</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reprepro -b /srv/ftp.debian.org/ftp/apt/ list oracular</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-4-4-删除-deb-包"><a href="#1-4-4-删除-deb-包" class="headerlink" title="1.4.4 删除 deb 包"></a>1.4.4 删除 deb 包</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reprepro -b /srv/ftp.debian.org/ftp/apt/ removesrc oracular  pkgname</span><br></pre></td></tr></table></figure>
+
+<p>以上就是 reprepro 的基本操作和配置，还有部分操作等之后遇到了在继续分享。</p>
+<h2 id="wanna-build"><a href="#wanna-build" class="headerlink" title="wanna build"></a>wanna build</h2><h3 id="install"><a href="#install" class="headerlink" title="install"></a>install</h3><p>wanna build 和 reprepro 不一样， wanna build 目前并不是 debian 的一个软件包，所以需要手动安装。还好官网给了不错的安装教程。</p>
+<ol>
+<li><p>通过 github 获取 wanna build 的仓库</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p /srv</span><br><span class="line">git <span class="built_in">clone</span> https://salsa.debian.org/wb-team/wanna-build.git /srv/wanna-build</span><br><span class="line"><span class="built_in">ln</span> -s /srv/wanna-build/bin/wanna-build /usr/local/bin/wanna-build</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装运行依赖</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install libdbi-perl libyaml-libyaml-perl libhash-merge-perl libstring-format-perl libtimedate-perl libyaml-tiny-perl libdpkg-perl libdbd-pg-perl libany-uri-escape-perl dctrl-tools moreutils dose-builddebcheck dose-distcheck</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装数据库</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install postgresql-<span class="variable">$&#123;version&#125;</span> postgresql-<span class="variable">$&#123;version&#125;</span>-debversion</span><br></pre></td></tr></table></figure></li>
+<li><p>导入数据库</p>
+<p> 切换到数据库用户</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">su postgres</span><br><span class="line">psql</span><br></pre></td></tr></table></figure>
+
+<p> 创建数据库</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> DATABASE wannadb;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> wbadm <span class="keyword">WITH</span> PASSWORD <span class="string">&#x27;wannapass&#x27;</span>;</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> DATABASE wannadb <span class="keyword">to</span> wbadm;</span><br><span class="line"><span class="keyword">ALTER</span> ROLE wbadm CREATEROLE;</span><br></pre></td></tr></table></figure>
+
+<p> 退出数据库，然后导入 sql 文件</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">quit</span><br><span class="line"></span><br><span class="line">psql -d wannadb -f /srv/wanna-build/schema/roles.sql</span><br><span class="line">psql -d wannadb -f /srv/wanna-build/schema/main-tables.sql</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>生成特定架构的 wanna build 表</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /srv/wanna-build/schema/</span><br><span class="line">./arches-tables.sh <span class="variable">$ARCH</span> | psql -d wannadb</span><br></pre></td></tr></table></figure>
+
+<p> <strong>注意</strong>: $ARCH 记得替换成想要生成的架构， 包括不限于 riscv64, x86 等。请按需填写</p>
+</li>
+<li><p>创建 wanna build 用户</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">su</span><br><span class="line">adduser --disabled-password --gecos <span class="string">&quot;&quot;</span>  wbadm</span><br><span class="line"><span class="built_in">mkdir</span> -p /srv/wanna-build/tmp</span><br><span class="line"><span class="built_in">chmod</span> 750 /srv/wanna-build/tmp/</span><br><span class="line"><span class="built_in">chown</span> wbadm /srv/wanna-build/tmp/</span><br></pre></td></tr></table></figure>
+
+<p> wanna build 配置完成之后，大部分的操作都会在这个用户下进行</p>
+</li>
+<li><p>配置 wbadm 和 sql 的连接</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> /usr/share/postgresql/*/pg_service.conf.sample /etc/postgresql-common/pg_service.conf</span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> &gt;&gt; /etc/postgresql-common/pg_service.conf</span><br><span class="line">[wanna-build]</span><br><span class="line">dbname=wannadb</span><br><span class="line">user=wbadm</span><br><span class="line"></span><br><span class="line">[wanna-build-privileged]</span><br><span class="line">dbname=wannadb</span><br><span class="line">user=wbadm</span><br></pre></td></tr></table></figure>
+
+<p> 同时允许 wbadm 用户允许本地访问数据库</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/postgresql/*/main/pg_hba.conf</span><br><span class="line"></span><br><span class="line"><span class="built_in">local</span> all wbadm trust</span><br></pre></td></tr></table></figure>
+
+<p> 这里面的 <code>*</code> 请自行替换为自己的 sql 版本</p>
+</li>
+<li><p>重启数据库</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">    /etc/init.d/postgresql restart</span><br><span class="line">    ````</span><br><span class="line"></span><br><span class="line"><span class="comment">### 插入架构和构建版本信息</span></span><br><span class="line"></span><br><span class="line">这部分内容都是对数据库的操作，其中很多内容都需要进行替换。</span><br><span class="line"></span><br><span class="line">1. 登录到 wbadm 数据库</span><br><span class="line"></span><br><span class="line">    ```sh</span><br><span class="line">    su postgres</span><br><span class="line">    psql -U wbadm -d wannadb</span><br></pre></td></tr></table></figure></li>
+<li><p>定义支持的架构和发行版</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> distributions(distribution,build_dep_resolver) <span class="keyword">VALUES</span> (<span class="string">&#x27;sid&#x27;</span>,<span class="string">&#x27;apt&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> architectures(architecture) <span class="keyword">VALUES</span> (<span class="string">&#x27;amd64&#x27;</span>),(<span class="string">&#x27;i386&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> distribution_architectures(distribution,architecture,archive) <span class="keyword">VALUES</span> (<span class="string">&#x27;sid&#x27;</span>,<span class="string">&#x27;amd64&#x27;</span>,<span class="string">&#x27;debian&#x27;</span>),(<span class="string">&#x27;sid&#x27;</span>,<span class="string">&#x27;i386&#x27;</span>,<span class="string">&#x27;debian&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> locks(distribution,architecture) <span class="keyword">VALUES</span> (<span class="string">&#x27;sid&#x27;</span>,<span class="string">&#x27;amd64&#x27;</span>),(<span class="string">&#x27;sid&#x27;</span>,<span class="string">&#x27;i386&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这里面的 <code>distribution</code>， <code>architecture</code> 要和 reprepro 中的配置保持一致。</p>
+</li>
+<li><p>设定发行版别名 (可选)</p>
+ <figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> distribution_aliases(distribution,<span class="keyword">alias</span>) <span class="keyword">VALUES</span>(<span class="string">&#x27;sid&#x27;</span>,<span class="string">&#x27;unstable&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p> 表示 unstable 是 sid 发行版的 别名。</p>
+</li>
+</ol>
+<h3 id="添加-Packages-arch-specific"><a href="#添加-Packages-arch-specific" class="headerlink" title="添加 Packages-arch-specific"></a>添加 Packages-arch-specific</h3><pre><code>packages-arch-specific 是debian 中列出仅适用于特定架构的软件包的一个文件。 因为我只是单一架构，所以并未涉及到这部分，就只做摘录。
+</code></pre>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">su</span><br><span class="line">SUITE=sid</span><br><span class="line"><span class="built_in">mkdir</span> -p /srv/buildd.debian.org/web/quinn-diff/<span class="variable">$&#123;SUITE&#125;</span></span><br><span class="line"><span class="built_in">cd</span> /srv/buildd.debian.org/web/quinn-diff/<span class="variable">$&#123;SUITE&#125;</span>/</span><br><span class="line">wget https://buildd.debian.org/quinn-diff/<span class="variable">$&#123;SUITE&#125;</span>/Packages-arch-specific</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加软件包到数据库"><a href="#添加软件包到数据库" class="headerlink" title="添加软件包到数据库"></a>添加软件包到数据库</h3><p>这里面需要用到一个 trigger.local 的文件。<br>在 <a href="https://wiki.debian.org/DebianWannaBuildInfrastructureOnOneServer?action=AttachFile&do=view&target=trigger.local">wiki</a> 上有这样一份文件案例，我只讲述修改的部分。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">ARCHIVE</span>=<span class="string">&#x27;local&#x27;</span></span><br><span class="line"><span class="attr">SUITES</span>=<span class="string">&quot;sid&quot;</span></span><br><span class="line"><span class="attr">ARCHES</span>=<span class="string">&quot;amd64 i386&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">REPOSITORY</span>=<span class="string">&#x27;/org/ftp.debian.org/ftp/apt/dists&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是文件开头的部分</p>
+<ul>
+<li><code>ARCHIVE</code> 指定的是储存库的名称，可以任意起名</li>
+<li><code>SUITES</code> 指定支持的发行版，和 <code>distribution</code> 保持一致。</li>
+<li><code>ARCHES</code> 指定支持的架构，记得按需修改</li>
+<li><code>REPOSITORY</code> 这个很重要，指定了仓库的 dists&#x2F; 目录路径，里面存放的是 Packages.gz 和 Release 文件。这个路径是 reprepro 的路径，记得一直写到 <code>dists</code> 层。</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># copy trigger.local into /srv/wanna-build/triggers</span></span><br><span class="line">su</span><br><span class="line"><span class="built_in">chmod</span> a+x /srv/wanna-build/triggers/trigger.local</span><br><span class="line">su wbadm</span><br><span class="line"><span class="built_in">cd</span> /srv/wanna-build/triggers</span><br><span class="line">./trigger.local</span><br></pre></td></tr></table></figure>
+
+<p>有几个仓库就需要有几个 trigger.local，当然是可以更改名称和后缀了，为了便于多仓库之间的区分，我建议直接用仓库名称命名。</p>
+<h4 id="踩坑小贴士"><a href="#踩坑小贴士" class="headerlink" title="踩坑小贴士"></a>踩坑小贴士</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> suite <span class="keyword">in</span> <span class="variable">$SUITES</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">	SOURCES=<span class="string">&quot;Sources.<span class="variable">$suite</span>.incoming-filtered.gz&quot;</span></span><br><span class="line">	filter_out_nonfree <span class="string">&quot;<span class="variable">$ARCHIVE_BASE</span>/archive/<span class="variable">$suite</span>/main/source/Sources.gz&quot;</span> <span class="string">&quot;<span class="variable">$SOURCES</span>&quot;</span></span><br><span class="line">	PACKAGES=<span class="string">&quot;<span class="variable">$ARCHIVE_BASE</span>/archive/<span class="variable">$suite</span>/main/binary-%ARCH%/Packages.gz&quot;</span></span><br><span class="line">	trigger_wb_update <span class="string">&quot;<span class="variable">$suite</span>&quot;</span> <span class="string">&quot;<span class="variable">$ARCHES</span>&quot;</span> <span class="string">&quot;<span class="variable">$SOURCES</span>&quot;</span> <span class="string">&quot;<span class="variable">$PACKAGES</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p><code>trigger.local</code> 里面有一点点小坑，里面用到了一个脚本 <code>filter_out_nonfree</code> 已经被移除了，会报错找不到命令。我们研究后发现， <code>filter_out_nonfree</code> 这个函数并没有做什么别的事情，只是在复制而已。于是可以直接简单除暴的修改为 <code>cp</code>,修改后的如下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> suite <span class="keyword">in</span> <span class="variable">$SUITES</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    SOURCES=<span class="string">&quot;Sources.<span class="variable">$suite</span>.incoming-filtered.gz&quot;</span></span><br><span class="line">    <span class="built_in">cp</span> <span class="string">&quot;<span class="variable">$ARCHIVE_BASE</span>/archive/<span class="variable">$suite</span>/main/source/Sources.gz&quot;</span> <span class="string">&quot;<span class="variable">$SOURCES</span>&quot;</span></span><br><span class="line">    PACKAGES=<span class="string">&quot;<span class="variable">$ARCHIVE_BASE</span>/archive/<span class="variable">$suite</span>/main/binary-%ARCH%/Packages.gz&quot;</span></span><br><span class="line">    trigger_wb_update <span class="string">&quot;<span class="variable">$suite</span>&quot;</span> <span class="string">&quot;<span class="variable">$ARCHES</span>&quot;</span> <span class="string">&quot;<span class="variable">$SOURCES</span>&quot;</span> <span class="string">&quot;<span class="variable">$PACKAGES</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><p>命令都需要在 <code>wbadm</code> 用户下来运行，否则会有权限问题</p>
+<ol>
+<li>添加完软件包后，就可以来看软件包的情况了</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wanna-build --list all --<span class="built_in">arch</span> riscv64 -d oracular</span><br></pre></td></tr></table></figure>
+<p>这会打印出 <code>oracular</code> 仓库下所有软件包的信息。 其中 list 的状态有以下几种，可以根据具状态来筛选不同的软件包 <code>Auto-Not-For-Us</code>,<code>BD-Uninstallable</code>,<code>Build-Attempted</code>,<code>Building</code>,<code>Built</code>,<code>Installed</code>.</p>
+<ol start="2">
+<li>设置软件包的状态，比如说某个失败的软件包，我修改后想要重新 build ，目前我暂未找到更好的方案，现在是直接修改数据库</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo -u postgres psql -d wannadb -U wbadm</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> packages <span class="keyword">SET</span> state<span class="operator">=</span><span class="string">&#x27;Needs-Build&#x27;</span> <span class="keyword">WHERE</span> distribution<span class="operator">=</span><span class="string">&#x27;oracular&#x27;</span> <span class="keyword">AND</span> architecture<span class="operator">=</span><span class="string">&#x27;riscv64&#x27;</span> <span class="keyword">AND</span> state<span class="operator">=</span><span class="string">&#x27;BD-Uninstallable&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>这一条就是将所有依赖问题导致失败的软件包重新设置为需要 build ，然后 wanna build 就会给 buildd 下发 build 任务，让这些软件包再次构建。</p>
+<h2 id="buildd"><a href="#buildd" class="headerlink" title="buildd"></a>buildd</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install sbuild buildd sudo schroot debootstrap</span><br></pre></td></tr></table></figure>
+<h3 id="设置-sbuild-和-schroot"><a href="#设置-sbuild-和-schroot" class="headerlink" title="设置 sbuild 和 schroot"></a>设置 sbuild 和 schroot</h3><p>sbuild 和 schroot 的资料有很多，这边就不赘述。</p>
+<h3 id="配置-buildd"><a href="#配置-buildd" class="headerlink" title="配置 buildd"></a>配置 buildd</h3><ol>
+<li>添加 buildd 用户，在 sbuild 组下</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">usermod -a -G sbuild buildd</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>修改配置 buildd 配置文件</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/buildd/buildd.conf</span><br></pre></td></tr></table></figure>
+
+<p>以下是我在用的的 buildd conf</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"># build 架构</span><br><span class="line">$build_arch =&#x27;riscv64&#x27;;</span><br><span class="line"></span><br><span class="line"># 仓库信息</span><br><span class="line">$distributions = [</span><br><span class="line">&#123;</span><br><span class="line">        # 指定定支持的发行版，和 `distribution` 保持一致</span><br><span class="line">        dist_name =&gt; [&#x27;oracular&#x27;],</span><br><span class="line">        # build 架构</span><br><span class="line">        built_architecture =&gt; $build_arch ,</span><br><span class="line">        # wanna build 服务器 ip</span><br><span class="line">        wanna_build_ssh_host =&gt; &quot;xxx.xxx.xxx.xx&quot;,</span><br><span class="line">        # wanna build 服务器 ssh 用户名和数据库用户名，这些不用修改</span><br><span class="line">        wanna_build_ssh_user =&gt; &quot;buildd&quot;,</span><br><span class="line">        wanna_build_db_user =&gt; &quot;wbadm&quot;,</span><br><span class="line">        # dupload 配置</span><br><span class="line">        dupload_local_queue_dir =&gt; &quot;upload&quot;,</span><br><span class="line">        logs_mailed_to =&gt; $admin_mail,</span><br><span class="line">        # 使用构建的 chroot ,这个请指定上一步创建的 chroot</span><br><span class="line">        sbuild_chroot =&gt; &#x27;xxxx_chroot&#x27;,</span><br><span class="line">&#125;</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"># 本机架构</span><br><span class="line">$host_arch = &#x27;x86&#x27;;</span><br><span class="line"></span><br><span class="line"># 日志配置</span><br><span class="line">$daemon_log_file = &#x27;/var/log/buildd.log&#x27;;</span><br><span class="line">$idle_sleep_time = 300;</span><br><span class="line">$verbose = 16;</span><br><span class="line">$admin_mail = &#x27;root&#x27;;</span><br><span class="line">$log_queued_messages = 1;</span><br><span class="line"></span><br><span class="line"># 相关命令路径</span><br><span class="line">$apt_get = &#x27;apt-get&#x27;;</span><br><span class="line">$mailprog = &#x27;/usr/sbin/sendmail&#x27;;</span><br><span class="line">$ssh = &#x27;ssh&#x27;;</span><br><span class="line">$sudo = &#x27;sudo&#x27;;</span><br><span class="line"></span><br><span class="line"># 上传队列</span><br><span class="line">$upload_queues = [</span><br><span class="line">        &#123;</span><br><span class="line">                dupload_local_queue_dir =&gt; &quot;upload&quot;,</span><br><span class="line">                dupload_archive_name =&gt; &quot;anonymous-ftp-master&quot;,</span><br><span class="line">        &#125;</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+<p>以上只是我的 buildd 配置，不一定是最优解。</p>
+<ol start="3">
+<li>配置 ssh<br>可以看到，在上面我们是通过 ssh 连接到 wanna build 服务器的，所以我们需要给 buildd 配置一套 ssh key ，并把公钥添加到 wanna build 服务器中.</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译机</span></span><br><span class="line">su - buildd</span><br><span class="line">ssh-keygen</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wanna build 机</span></span><br><span class="line"><span class="built_in">cd</span> /var/lib/buildd/.ssh/</span><br><span class="line"><span class="built_in">cat</span> id_rsa.pub &gt; authorized_keys</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>创建 log 文件</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#编译机</span></span><br><span class="line"><span class="built_in">touch</span> /var/log/buildd.log</span><br><span class="line"><span class="built_in">chown</span> buildd:buildd /var/log/buildd.log</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>然后就可以愉快的运行 buildd 了</li>
+</ol>
+<p>吗？</p>
+<p>如果你跟着 wiki 走，这时候就是直接运行</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/buildd start</span><br></pre></td></tr></table></figure>
+<p>然后就会运行失败，为什么呢？ 因为现在已经跑者一个 buildd 了。 debian 在安装 buildd 的时候就已经默认运行了，所以我们需要先手动 kill 掉正在运行的 buildd,然后在重新 start 运行。但是我更喜欢用 systemctl 来管理 buildd 的状态，所以 kill 之后我会通过 <code>systemctl start buildd.service</code> 来运行 buildd.</p>
+<p>之后就能顺利运行 buildd 啦，现在这一套系统就完美的跑在你的服务器上了。如果有什么有的建议和方案请与我交流。</p>
+<h2 id="一些小问题"><a href="#一些小问题" class="headerlink" title="一些小问题"></a>一些小问题</h2><ol>
+<li>buildd 接收任务后打包完成的 deb 包并不会上传到 wanna build 服务器中，以至于我需要手动拷贝。</li>
+<li>批量修改状态不够优雅，需要在研究下 wanna build 命令，看看有没有批量修改的工具。</li>
+</ol>
+<hr>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考:"></a>参考:</h3><ol>
+<li><a target="_blank" rel="noopener" href="https://wiki.debian.org/SetupBuildServiceForWanna-build">SetupBuildServiceForWanna-build</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.debian.org/DebianWannaBuildInfrastructureOnOneServer">DebianWannaBuildInfrastructureOnOneServer</a></li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/categories/">Categories</a></li>
+         
+          <li><a href="/tags/">Tags</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-reprepro"><span class="toc-number">1.</span> <span class="toc-text">1. reprepro</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-install"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 install</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%88%9B%E5%BB%BA%E4%BB%93%E5%BA%93%E7%9B%AE%E5%BD%95"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 创建仓库目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 配置文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-1-distributions"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.3.1 distributions</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2-incoming"><span class="toc-number">1.3.2.</span> <span class="toc-text">1.3.2 incoming</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-3-options"><span class="toc-number">1.3.3.</span> <span class="toc-text">1.3.3 options</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-4-updates"><span class="toc-number">1.3.4.</span> <span class="toc-text">1.3.4 updates</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E4%BD%BF%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-1-%E6%9B%B4%E6%96%B0%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%B4%A2%E5%BC%95"><span class="toc-number">1.4.1.</span> <span class="toc-text">1.4.1 更新软件包索引</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-2-%E5%AF%BC%E5%85%A5-deb-%E5%8C%85-x2F-dsc-%E6%96%87%E4%BB%B6"><span class="toc-number">1.4.2.</span> <span class="toc-text">1.4.2 导入 deb 包&#x2F; dsc 文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-3-%E6%9F%A5%E7%9C%8B%E8%BD%AF%E4%BB%B6%E5%8C%85-list"><span class="toc-number">1.4.3.</span> <span class="toc-text">1.4.3 查看软件包 list</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-4-%E5%88%A0%E9%99%A4-deb-%E5%8C%85"><span class="toc-number">1.4.4.</span> <span class="toc-text">1.4.4 删除 deb 包</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wanna-build"><span class="toc-number">2.</span> <span class="toc-text">wanna build</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#install"><span class="toc-number">2.1.</span> <span class="toc-text">install</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0-Packages-arch-specific"><span class="toc-number">2.2.</span> <span class="toc-text">添加 Packages-arch-specific</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E8%BD%AF%E4%BB%B6%E5%8C%85%E5%88%B0%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">2.3.</span> <span class="toc-text">添加软件包到数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E5%B0%8F%E8%B4%B4%E5%A3%AB"><span class="toc-number">2.3.1.</span> <span class="toc-text">踩坑小贴士</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">2.4.</span> <span class="toc-text">常用命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#buildd"><span class="toc-number">3.</span> <span class="toc-text">buildd</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">3.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE-sbuild-%E5%92%8C-schroot"><span class="toc-number">3.2.</span> <span class="toc-text">设置 sbuild 和 schroot</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-buildd"><span class="toc-number">3.3.</span> <span class="toc-text">配置 buildd</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E5%B0%8F%E9%97%AE%E9%A2%98"><span class="toc-number">4.</span> <span class="toc-text">一些小问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.1.</span> <span class="toc-text">参考:</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&text=wanna build 和 buildd 不完全使用指南"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&title=wanna build 和 buildd 不完全使用指南"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&is_video=false&description=wanna build 和 buildd 不完全使用指南"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=wanna build 和 buildd 不完全使用指南&body=Check out this article: http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&title=wanna build 和 buildd 不完全使用指南"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&title=wanna build 和 buildd 不完全使用指南"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&title=wanna build 和 buildd 不完全使用指南"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&title=wanna build 和 buildd 不完全使用指南"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&name=wanna build 和 buildd 不完全使用指南&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://ieast.github.io/2025/03/14/wanna-build%E5%92%8Cbuildd%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/&t=wanna build 和 buildd 不完全使用指南"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020-2025
+    eastdong
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/Search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QSLGQRJWYR"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-QSLGQRJWYR');
+    </script>
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
